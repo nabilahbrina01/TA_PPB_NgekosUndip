@@ -93,10 +93,10 @@ Base URL: `https://ta-ppb-ngekos-undip-api.vercel.app/api`
 | POST / PUT / DELETE | `/areas`, `/areas/:id` | Tambah / ubah / hapus area (khusus pemilik) |
 | GET | `/kos` | Semua kos. Query opsional: `search`, `area_id`, `type`, `owner_id`, `sort` (`termurah`/`termahal`/`terdekat`) |
 | GET | `/kos/:id` | Detail kos |
-| POST / PUT / DELETE | `/kos`, `/kos/:id` | Tambah kos (khusus pemilik); ubah / hapus hanya iklan milik sendiri |
+| POST / PUT / DELETE | `/kos`, `/kos/:id` | Tambah kos (khusus pemilik, `address` wajib diisi); ubah / hapus hanya iklan milik sendiri |
 | GET | `/kontrakan` | Semua kontrakan. Query opsional: `search`, `area_id`, `available`, `sort` |
 | GET | `/kontrakan/:id` | Detail kontrakan |
-| POST / PUT / DELETE | `/kontrakan`, `/kontrakan/:id` | Tambah kontrakan (khusus pemilik); ubah / hapus hanya iklan milik sendiri |
+| POST / PUT / DELETE | `/kontrakan`, `/kontrakan/:id` | Tambah kontrakan (khusus pemilik, `address` wajib diisi); ubah / hapus hanya iklan milik sendiri |
 | POST | `/upload` | Upload foto (form-data, field `image`, maks 4 MB), khusus pemilik, mengembalikan `url` |
 | GET | `/favorites` | Favorit milik user yang login (wajib token) |
 | POST | `/favorites` | Tambah favorit (`item_type`: kos/kontrakan, `item_id`), wajib token |
