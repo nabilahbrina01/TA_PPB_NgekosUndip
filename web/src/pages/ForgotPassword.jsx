@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import authService from "../services/authService";
 import { AuthLayout } from "../components/AuthLayout";
-import { Field, PasswordField, isEmail } from "../components/FormFields";
+import { Field, FormNote, PasswordField, PasswordRules, isEmail, passwordError } from "../components/FormFields";
 import { OtpInput, ResendButton } from "../components/OtpWidgets";
 import { useToast } from "../context/ToastContext";
 
@@ -24,7 +24,7 @@ export default function ForgotPassword() {
   async function sendCode(e) {
     e.preventDefault();
     if (!isEmail(email)) {
-      setErrors({ email: "Masukkan email yang valid" });
+      setErrors({ email: "Format email belum benar" });
       return;
     }
     setErrors({});
@@ -45,8 +45,10 @@ export default function ForgotPassword() {
     e.preventDefault();
     const next = {};
     if (code.length !== 6) next.code = "Masukkan 6 digit kode";
-    if (password.length < 6) next.password = "Password minimal 6 karakter";
-    if (confirm !== password) next.confirm = "Password tidak sama";
+    const pwError = passwordError(password);
+    if (pwError) next.password = pwError;
+    if (!confirm) next.confirm = "Ulangi password baru";
+    else if (confirm !== password) next.confirm = "Konfirmasi password tidak sama";
     setErrors(next);
     if (Object.keys(next).length) return;
 
@@ -76,33 +78,66 @@ export default function ForgotPassword() {
     <AuthLayout
       back
       title="Lupa password"
-      subtitle={codeSent ? "Masukkan kode OTP dan password barumu" : "Kami akan mengirim kode OTP ke emailmu"}
+      subtitle={codeSent ? "Buat password baru untuk akunmu" : "Atur ulang password akunmu"}
     >
+      <p className="step-badge">Langkah {codeSent ? 2 : 1} dari 2</p>
+
       {!codeSent ? (
         <form onSubmit={sendCode} noValidate>
-          <Field label="Email akun" icon={Mail} type="email" value={email}
-            onChange={(e) => setEmail(e.target.value)} error={errors.email} />
+          <FormNote>
+            Masukkan email yang terdaftar untuk menerima <b>kode verifikasi</b>.
+          </FormNote>
+          <Field
+            label="Email"
+            icon={Mail}
+            type="email"
+            autoComplete="email"
+            placeholder="Masukkan email terdaftar"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={errors.email}
+          />
           <button className="btn btn-primary btn-block" disabled={loading}>
-            {loading ? "Mengirim..." : "Kirim kode OTP"}
+            {loading ? "Mengirim..." : "Kirim kode verifikasi"}
           </button>
         </form>
       ) : (
         <form onSubmit={resetPassword} noValidate>
-          <p className="muted center">
-            Kode dikirim ke <strong className="navy">{email.trim()}</strong>
-          </p>
-          <OtpInput value={code} onChange={setCode} />
-          {errors.code && <p className="field-error center">{errors.code}</p>}
-          <PasswordField label="Password baru (minimal 6 karakter)" icon={Lock} autoComplete="new-password"
-            value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} />
-          <PasswordField label="Ulangi password baru" icon={Lock} autoComplete="new-password"
-            value={confirm} onChange={(e) => setConfirm(e.target.value)} error={errors.confirm} />
+          <FormNote>
+            Kode dikirim ke <b>{email.trim()}</b>. Cek juga folder Spam.
+          </FormNote>
+
+          <span className="field-label">Kode verifikasi</span>
+          <OtpInput value={code} onChange={(v) => { setCode(v); setErrors((p) => ({ ...p, code: undefined })); }} />
+          {errors.code
+            ? <p className="field-error center">{errors.code}</p>
+            : <p className="field-hint center">Berlaku 1 menit, maksimal 3 kali salah</p>}
+
+          <PasswordField
+            label="Password baru"
+            icon={Lock}
+            autoComplete="new-password"
+            placeholder="Buat password baru"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={Boolean(errors.password)}
+          />
+          <PasswordRules password={password} showErrors={Boolean(errors.password)} />
+          <PasswordField
+            label="Konfirmasi password baru"
+            icon={Lock}
+            autoComplete="new-password"
+            placeholder="Ulangi password baru"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            error={errors.confirm}
+          />
           <button className="btn btn-primary btn-block" disabled={loading}>
             {loading ? "Menyimpan..." : "Simpan password baru"}
           </button>
           <div className="center">
             <ResendButton onResend={resend} />
-            <button type="button" className="btn btn-text" onClick={() => { setCodeSent(false); setCode(""); }}>
+            <button type="button" className="btn btn-text" onClick={() => { setCodeSent(false); setCode(""); setErrors({}); }}>
               Ganti email
             </button>
           </div>

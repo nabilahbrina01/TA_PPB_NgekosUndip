@@ -7,6 +7,7 @@ create table users (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   email text not null unique,
+  phone text,                                 -- nomor HP / WhatsApp
   password_hash text not null,                -- password disimpan sebagai hash bcrypt
   role text not null default 'pencari' check (role in ('pencari', 'pemilik')),
   is_verified boolean not null default false, -- sudah verifikasi OTP email?

@@ -9,6 +9,10 @@ import { ToastProvider } from "./context/ToastContext";
 import "@fontsource-variable/plus-jakarta-sans";
 import "leaflet/dist/leaflet.css";
 import "./styles.css";
+import { initInstallPrompt } from "./utils/installPrompt";
+
+// Tangkap tawaran "Instal aplikasi" sejak awal (PWA)
+initInstallPrompt();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

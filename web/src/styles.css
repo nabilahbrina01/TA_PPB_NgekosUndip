@@ -2362,3 +2362,115 @@ h3 {
   border-radius: 4px;
   background: #fff;
 }
+
+/* Petunjuk pasang aplikasi (jika browser tidak memberi tombol otomatis) */
+.install-guide { margin-top: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.45; }
+.install-guide p { margin: 0; }
+
+/* ------------------------------------------------------------------ */
+/* Sistem form: ukuran teks dan jarak yang seragam di semua halaman     */
+/*   label 13px tebal · isian 14.5px · placeholder 14px abu muda        */
+/*   petunjuk & error 12px · jarak antar kolom 14px                     */
+/* ------------------------------------------------------------------ */
+:root {
+  --fs-label: 13px;
+  --fs-input: 14.5px;
+  --fs-placeholder: 14px;
+  --fs-hint: 12px;
+  --placeholder: #a3acb9;
+  --field-gap: 14px;
+}
+.field { margin-bottom: var(--field-gap); }
+.field-label {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.field-box { min-height: 48px; }
+.field-box input,
+.field-box select,
+.field-box textarea,
+.textarea,
+.search-box input,
+.add-facility input {
+  font-size: var(--fs-input);
+}
+.field-box input,
+.field-box select { padding: 12px 0; }
+.field-box textarea { padding: 12px 0; line-height: 1.45; }
+.textarea { padding: 12px 14px; line-height: 1.45; }
+
+.field-box input::placeholder,
+.field-box textarea::placeholder,
+.textarea::placeholder,
+.search-box input::placeholder,
+.add-facility input::placeholder {
+  font-size: var(--fs-placeholder);
+  font-weight: 400;
+  color: var(--placeholder);
+  opacity: 1;
+}
+.price-input input { font-size: 20px; }
+.price-input input::placeholder {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--placeholder);
+  opacity: 1;
+}
+.otp-input::placeholder { color: var(--placeholder); opacity: 1; }
+
+.field-hint,
+.field-error {
+  display: block;
+  font-size: var(--fs-hint);
+  line-height: 1.4;
+  margin-top: 5px;
+}
+.field-hint { color: var(--muted); font-weight: 400; }
+.field-error { font-weight: 600; }
+.field-hint.center,
+.field-error.center { text-align: center; }
+.role-hint { margin: 8px 0 var(--field-gap); }
+.char-count { font-size: var(--fs-hint); margin-top: 5px; }
+
+.form-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: #eef4fb;
+  border: 1px solid #d8e5f3;
+  color: var(--navy);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  margin-bottom: var(--field-gap);
+}
+.form-note > svg { flex: 0 0 auto; width: 16px; height: 16px; margin-top: 2px; color: var(--navy-light); }
+.step-badge {
+  display: inline-block;
+  background: rgba(245, 179, 1, 0.16);
+  color: #8a6400;
+  font-weight: 700;
+  font-size: 11.5px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin: 0 0 12px;
+}
+.password-rules {
+  list-style: none;
+  padding: 0;
+  margin: -8px 0 var(--field-gap);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: var(--fs-hint);
+  color: var(--muted);
+}
+.password-rules li { display: inline-flex; align-items: center; gap: 4px; }
+.password-rules li svg { width: 13px; height: 13px; opacity: 0.35; }
+.password-rules li.ok { color: #1f8a4c; font-weight: 600; }
+.password-rules li.ok svg { opacity: 1; }
+.password-rules li.bad { color: var(--danger); font-weight: 600; }
+.password-rules li.bad svg { opacity: 1; }
+.wizard-sub { font-size: 13.5px; line-height: 1.45; }

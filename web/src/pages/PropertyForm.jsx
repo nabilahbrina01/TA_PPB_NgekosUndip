@@ -58,7 +58,7 @@ export default function PropertyForm({ kind }) {
   const [form, setForm] = useState({
     images: [], name: "", type: "campur", area_id: "", address: "", point: null, distance_km: "",
     price: "", available_rooms: 1, bedrooms: 2, bathrooms: 1, is_available: true,
-    facilities: [], description: "", owner_name: user?.name || "", owner_phone: "",
+    facilities: [], description: "", owner_name: user?.name || "", owner_phone: user?.phone || "",
   });
   const [areas, setAreas] = useState([]);
   const [errors, setErrors] = useState({});
@@ -216,7 +216,8 @@ export default function PropertyForm({ kind }) {
             <h2 className="wizard-title">Tampilkan properti terbaikmu</h2>
             <p className="wizard-sub">Foto yang terang dan rapi membuat iklan lebih menarik.</p>
             <GalleryUploader value={form.images} onChange={(images) => update({ images })} onError={toast} />
-            <Field label={`Nama ${label.toLowerCase()} *`} icon={House} placeholder={isKos ? "Contoh: Kos Melati Tembalang" : "Contoh: Rumah Sewa Banjarsari"}
+            <Field label={`Nama ${label.toLowerCase()} *`} icon={House}
+              placeholder={isKos ? "Contoh: Kos Melati" : "Contoh: Rumah Asri"}
               value={form.name} onChange={(e) => update({ name: e.target.value })} error={errors.name} />
             {isKos && (
               <>
@@ -241,13 +242,16 @@ export default function PropertyForm({ kind }) {
               ))}
             </div>
             {errors.area_id && <p className="field-error">{errors.area_id}</p>}
-            <Field label="Alamat lengkap" icon={MapPin} textarea rows={2} placeholder="Nama jalan, nomor, RT/RW"
+            <Field label="Alamat (opsional)" icon={MapPin} textarea rows={2}
+              placeholder="Jalan, nomor, RT/RW"
               value={form.address} onChange={(e) => update({ address: e.target.value })} />
             <span className="field-label">Titik lokasi di peta</span>
             <LocationPicker value={form.point} onChange={(point) => update({ point })} onError={toast}
               fallbackCenter={AREA_CENTERS[areaName]} />
             {!form.point && (
-              <Field label="Belum bisa menandai peta? Isi jarak perkiraan (km)" icon={Footprints} inputMode="decimal" placeholder="Contoh: 1.5"
+              <Field label="Jarak ke kampus (km)" icon={Footprints} inputMode="decimal"
+                placeholder="Contoh: 1.5"
+                hint="Isi jika titik di peta belum ditandai"
                 value={form.distance_km} onChange={(e) => update({ distance_km: e.target.value.replace(/[^0-9.,]/g, "") })}
                 error={errors.distance_km} />
             )}
@@ -261,9 +265,12 @@ export default function PropertyForm({ kind }) {
             <span className="field-label">Harga sewa *</span>
             <PriceInput value={form.price} onChange={(price) => update({ price })} placeholder={isKos ? "950.000" : "20.000.000"}
               suffix={isKos ? "/bulan" : "/tahun"} error={errors.price} />
+            {!errors.price && <p className="field-hint">Ketik angka saja, titik ribuan otomatis</p>}
             <div className="counter-card">
               {isKos ? (
-                <Counter label="Kamar kosong" icon={DoorOpen} value={form.available_rooms} onChange={(n) => update({ available_rooms: n })} />
+                <>
+                  <Counter label="Kamar kosong" icon={DoorOpen} value={form.available_rooms} onChange={(n) => update({ available_rooms: n })} />
+                </>
               ) : (
                 <>
                   <Counter label="Kamar tidur" icon={BedDouble} min={1} value={form.bedrooms} onChange={(n) => update({ bedrooms: n })} />
@@ -289,9 +296,9 @@ export default function PropertyForm({ kind }) {
             <p className="wizard-sub">Ketuk untuk memilih. {form.facilities.length} dipilih.</p>
             <FacilityPicker presets={FACILITIES[kind]} value={form.facilities} onChange={(facilities) => update({ facilities })} />
             <label className="field">
-              <span className="field-label">Deskripsi</span>
+              <span className="field-label">Deskripsi (opsional)</span>
               <textarea className="textarea" rows={4} maxLength={500}
-                placeholder="Ceritakan suasana, aturan, atau kelebihan properti ini"
+                placeholder="Suasana, aturan, atau kelebihan properti"
                 value={form.description} onChange={(e) => update({ description: e.target.value })} />
               <span className="char-count">{form.description.length}/500</span>
             </label>
@@ -302,8 +309,12 @@ export default function PropertyForm({ kind }) {
           <section>
             <h2 className="wizard-title">Kontak & tinjau</h2>
             <p className="wizard-sub">Calon penyewa akan menghubungi nomor ini lewat WhatsApp.</p>
-            <Field label="Nama pemilik" icon={UserRound} value={form.owner_name} onChange={(e) => update({ owner_name: e.target.value })} />
-            <Field label="Nomor WhatsApp" icon={Phone} type="tel" placeholder="081234567890" value={form.owner_phone}
+            <Field label="Nama pemilik" icon={UserRound} placeholder="Masukkan nama pemilik"
+              value={form.owner_name} onChange={(e) => update({ owner_name: e.target.value })} />
+            <Field label="Nomor WhatsApp" icon={Phone} type="tel" inputMode="numeric"
+              placeholder="Contoh: 081234567890"
+              hint="Terisi otomatis dari nomor HP akunmu"
+              value={form.owner_phone}
               onChange={(e) => update({ owner_phone: e.target.value.replace(/[^0-9+]/g, "") })} error={errors.owner_phone} />
 
             <span className="field-label">Pratinjau iklan</span>

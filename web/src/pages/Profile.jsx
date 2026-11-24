@@ -4,6 +4,7 @@ import { BadgeCheck, ChevronRight, Download, GraduationCap, IdCard, Info, LogOut
 import { AddListingSheet } from "../components/AddListingSheet";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
+import { getInstallPrompt, isIOS, isStandalone, promptInstall, subscribeInstallPrompt } from "../utils/installPrompt";
 
 // Data pembuat aplikasi
 const PEMBUAT = {
@@ -15,18 +16,18 @@ const PEMBUAT = {
 export default function Profile() {
   const { user, isPemilik, logout } = useAuth();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [installPrompt, setInstallPrompt] = useState(null);
+  const [installPrompt, setInstallPrompt] = useState(getInstallPrompt());
+  const [showGuide, setShowGuide] = useState(false);
+  const installed = isStandalone();
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  // Tombol "Pasang aplikasi" (PWA) jika browser mendukung
-  useEffect(() => {
-    const handler = (e) => {
-      e.preventDefault();
-      setInstallPrompt(e);
-    };
-    window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
+  // Tombol "Pasang aplikasi" (PWA): event ditangkap sejak awal di main.jsx
+  useEffect(() => subscribeInstallPrompt(setInstallPrompt), []);
+
+  const handleInstall = async () => {
+    if (installPrompt) await promptInstall();
+    else setShowGuide((v) => !v);
+  };
 
   const initial = (user?.name || "?").trim()[0]?.toUpperCase();
 
@@ -36,18 +37,26 @@ export default function Profile() {
         <span className="profile-avatar">{initial}</span>
         <h1>{user?.name}</h1>
         <p>{user?.email}</p>
+        {user?.phone && <p>{user.phone}</p>}
         <span className="role-badge">{isPemilik ? "Pemilik kos" : "Pencari kos"}</span>
       </section>
 
       <div className="page-pad">
-        {installPrompt && (
-          <button className="btn btn-gold btn-block" onClick={async () => {
-            installPrompt.prompt();
-            await installPrompt.userChoice;
-            setInstallPrompt(null);
-          }}>
-            <Download size={18} /> Pasang NgekosUndip di HP
-          </button>
+        {!installed && (
+          <>
+            <button className="btn btn-gold btn-block" onClick={handleInstall}>
+              <Download size={18} /> Pasang NgekosUndip di HP
+            </button>
+            {showGuide && (
+              <div className="info-card install-guide">
+                {isIOS() ? (
+                  <p>Di Safari, tekan tombol <b>Bagikan</b> (kotak dengan panah ke atas), lalu pilih <b>Tambah ke Layar Utama</b>.</p>
+                ) : (
+                  <p>Buka web ini di <b>Google Chrome</b>, tekan menu <b>⋮</b> di kanan atas, lalu pilih <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>.</p>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {isPemilik && (

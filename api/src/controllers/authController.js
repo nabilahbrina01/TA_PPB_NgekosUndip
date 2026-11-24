@@ -16,6 +16,22 @@ function createToken(user) {
   });
 }
 
+// Ketentuan password: minimal 8 karakter, mengandung huruf dan angka
+function passwordError(password) {
+  if (password.length < 8) return "Password minimal 8 karakter";
+  if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+    return "Password harus mengandung huruf dan angka";
+  }
+  return null;
+}
+
+// Nomor HP: hanya angka, awalan +62/62 diubah menjadi 0 (contoh 081234567890)
+function cleanPhone(value) {
+  let digits = String(value || "").replace(/\D/g, "");
+  if (digits.startsWith("62")) digits = "0" + digits.slice(2);
+  return digits;
+}
+
 function cleanEmail(value) {
   return (value || "").trim().toLowerCase();
 }
@@ -67,22 +83,25 @@ async function checkOtp(email, purpose, code) {
 }
 
 export const AuthController = {
-  // POST /api/auth/register  body: { name, email, password, role }
+  // POST /api/auth/register  body: { name, email, phone, password, role }
   // role: "pencari" (default) atau "pemilik"
   // Akun dibuat dalam status belum terverifikasi, lalu kode OTP dikirim ke email.
   async register(req, res) {
     try {
       const name = (req.body.name || "").trim();
       const email = cleanEmail(req.body.email);
+      const phone = cleanPhone(req.body.phone);
       const password = req.body.password || "";
       const role = req.body.role === "pemilik" ? "pemilik" : "pencari";
 
-      if (!name || !email || !password) {
-        return res.status(400).json({ error: "Nama, email, dan password wajib diisi" });
+      if (!name || !email || !phone || !password) {
+        return res.status(400).json({ error: "Nama, email, nomor HP, dan password wajib diisi" });
       }
-      if (password.length < 6) {
-        return res.status(400).json({ error: "Password minimal 6 karakter" });
+      if (!/^08\d{8,11}$/.test(phone)) {
+        return res.status(400).json({ error: "Nomor HP harus diawali 08 dan berisi 10-13 angka" });
       }
+      const pwError = passwordError(password);
+      if (pwError) return res.status(400).json({ error: pwError });
 
       // Password disimpan dalam bentuk hash, bukan teks asli
       const password_hash = await bcrypt.hash(password, 10);
@@ -93,9 +112,9 @@ export const AuthController = {
       }
       if (existing) {
         // Pernah daftar tapi belum verifikasi: perbarui data lalu kirim kode baru
-        await UserModel.updateByEmail(email, { name, password_hash, role });
+        await UserModel.updateByEmail(email, { name, phone, password_hash, role });
       } else {
-        await UserModel.create({ name, email, password_hash, role });
+        await UserModel.create({ name, email, phone, password_hash, role });
       }
 
       await issueOtp(email, "register");
@@ -227,9 +246,8 @@ export const AuthController = {
           .status(400)
           .json({ error: "Email, kode OTP, dan password baru wajib diisi" });
       }
-      if (password.length < 6) {
-        return res.status(400).json({ error: "Password minimal 6 karakter" });
-      }
+      const pwError = passwordError(password);
+      if (pwError) return res.status(400).json({ error: pwError });
 
       const error = await checkOtp(email, "reset", code);
       if (error) return res.status(400).json({ error });

@@ -57,6 +57,7 @@ export default function VerifyOtp() {
           <strong className="navy">{email}</strong>
         </p>
         <OtpInput value={code} onChange={setCode} onComplete={verify} />
+        <p className="field-hint">Berlaku 1 menit, maksimal 3 kali salah</p>
         <button className="btn btn-primary btn-block" disabled={loading}>
           {loading ? "Memeriksa..." : "Verifikasi"}
         </button>

@@ -41,7 +41,7 @@ export default function Login() {
   return (
     <AuthLayout
       title="Selamat datang!"
-      subtitle="Masuk untuk mencari kos & kontrakan di sekitar Undip"
+      subtitle="Masuk untuk mencari kos di sekitar Undip"
       footer={
         <>
           Belum punya akun? <Link to="/daftar">Daftar</Link>
@@ -54,6 +54,7 @@ export default function Login() {
           icon={Mail}
           type="email"
           autoComplete="email"
+          placeholder="Masukkan email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           error={errors.email}
@@ -62,6 +63,7 @@ export default function Login() {
           label="Password"
           icon={Lock}
           autoComplete="current-password"
+          placeholder="Masukkan password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           error={errors.password}
