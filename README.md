@@ -10,7 +10,7 @@ Tugas Akhir Praktikum Pemrograman Perangkat Bergerak (PPB) 2026
 | NIM | 21120123120025 |
 | Program Studi | Teknik Komputer, Universitas Diponegoro |
 
-**Buka aplikasi (PWA):** `https://<link-web-vercel-kamu>` — buka di Chrome HP, lalu pilih **Tambahkan ke layar utama** / **Instal aplikasi**.
+**Buka aplikasi (PWA):** `https://ta-ppb-ngekos-undip-app.vercel.app/` — buka di Chrome HP, lalu pilih **Tambahkan ke layar utama** / **Instal aplikasi**.
 
 NgekosUndip membantu mahasiswa Undip mencari kos dan kontrakan di sekitar kampus (Tembalang, Sumurboto, Meteseh, Jatimulyo, Banyumanik). Pengguna bisa melihat daftar dan detail kos/kontrakan, mencari dan memfilter, menyimpan favorit, serta login dengan akun sendiri.
 
@@ -20,12 +20,12 @@ NgekosUndip membantu mahasiswa Undip mencari kos dan kontrakan di sekitar kampus
 Aplikasi PWA (React)  --HTTP-->  REST API buatan sendiri (Express.js, Vercel)  -->  Database PostgreSQL (Supabase)
 ```
 
-Aplikasi PWA **hanya** memanggil API buatan sendiri di `https://ngekos-undip.vercel.app/api`. Aplikasi tidak mengakses Supabase secara langsung. Seluruh baca/tulis database dilakukan oleh backend Express.
+Aplikasi PWA **hanya** memanggil API buatan sendiri di `https://ta-ppb-ngekos-undip-api.vercel.app/api`. Aplikasi tidak mengakses Supabase secara langsung. Seluruh baca/tulis database dilakukan oleh backend Express.
 
 ## Struktur Folder
 
 ```
-ngekos-undip/
+TA_PPB_NgekosUndip/
 ├── api/                    # Backend: Express.js + Supabase (deploy di Vercel)
 │   ├── database/setup.sql  # seluruh tabel, data contoh, dan bucket foto
 │   ├── src/
@@ -77,7 +77,7 @@ Navigasi utama menggunakan **Bottom Navigation Bar** (Beranda, Kos, Kontrakan, F
 
 ## Endpoint API
 
-Base URL: `https://ngekos-undip.vercel.app/api`
+Base URL: `https://ta-ppb-ngekos-undip-api.vercel.app/api`
 
 | Method | Endpoint | Keterangan |
 |---|---|---|
@@ -124,7 +124,7 @@ npm install
 npm run dev
 ```
 
-Buka `http://localhost:5173`. Alamat API diatur lewat `VITE_API_BASE_URL` di file `web/.env` (contoh di `.env.example`); jika kosong memakai `https://ngekos-undip.vercel.app/api`.
+Buka `http://localhost:5173`. Alamat API diatur lewat `VITE_API_BASE_URL` di file `web/.env` (contoh di `.env.example`); jika kosong memakai `https://ta-ppb-ngekos-undip-api.vercel.app/api`.
 
 Untuk mencoba di HP (laptop dan HP di jaringan Wi-Fi yang sama):
 
@@ -137,7 +137,7 @@ Buka alamat **Network** yang muncul di browser HP.
 
 ### Deploy PWA ke Vercel
 
-Buat project Vercel baru dari repository yang sama dengan **Root Directory** `web` (Framework: Vite). Setelah deploy, buka link-nya di Chrome HP lalu pilih **Tambahkan ke layar utama**.
+Buat project Vercel baru dari repository yang sama dengan **Root Directory** `web` (Framework: Vite) dan Environment Variable `VITE_API_BASE_URL=https://ta-ppb-ngekos-undip-api.vercel.app/api`. Setelah deploy, buka link-nya di Chrome HP lalu pilih **Tambahkan ke layar utama**.
 
 ## Teknologi
 
