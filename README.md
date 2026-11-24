@@ -81,7 +81,7 @@ Base URL: `https://ta-ppb-ngekos-undip-api.vercel.app/api`
 
 | Method | Endpoint | Keterangan |
 |---|---|---|
-| POST | `/auth/register` | Daftar akun (`name`, `email`, `password`, `role`: pencari/pemilik), kode OTP dikirim ke email |
+| POST | `/auth/register` | Daftar akun (`name`, `email`, `phone`, `password`, `role`: pencari/pemilik), kode OTP dikirim ke email. Password minimal 8 karakter, berisi huruf dan angka |
 | POST | `/auth/login` | Login (`email`, `password`), mengembalikan token |
 | POST | `/auth/verify-otp` | Verifikasi akun (`email`, `code`), mengembalikan token |
 | POST | `/auth/resend-otp` | Kirim ulang kode (`email`, `purpose`: register/reset) |
