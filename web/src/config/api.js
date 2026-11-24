@@ -5,7 +5,7 @@ import axios from "axios";
 // Aplikasi TIDAK mengakses Supabase langsung, semua lewat API ini.
 // ---------------------------------------------------------------------------
 const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://ngekos-undip.vercel.app/api";
+    import.meta.env.VITE_API_BASE_URL || "https://ta-ppb-ngekos-undip-api.vercel.app/api";
 
 // Kunci localStorage untuk sesi login
 export const TOKEN_KEY = "ngekos_token";
