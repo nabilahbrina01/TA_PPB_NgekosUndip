@@ -64,10 +64,10 @@ export default function Profile() {
             <h2 className="section-title">Kelola Iklan</h2>
             <div className="info-card menu">
               <Link to="/iklan-saya" className="menu-item">
-                <Megaphone size={20} /> <span>Iklan saya</span> <ChevronRight size={18} />
+                <Megaphone size={20} /> <span>Iklan Saya</span> <ChevronRight size={18} />
               </Link>
               <button className="menu-item" onClick={() => setSheetOpen(true)}>
-                <Plus size={20} /> <span>Pasang iklan baru</span> <ChevronRight size={18} />
+                <Plus size={20} /> <span>Pasang Iklan</span> <ChevronRight size={18} />
               </button>
             </div>
           </>

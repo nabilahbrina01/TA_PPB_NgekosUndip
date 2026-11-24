@@ -1874,21 +1874,53 @@ h3 {
   justify-content: flex-end;
   gap: 8px;
 }
+/* ===== Notifikasi (toast) =====
+   Kecil, di atas layar, ukurannya mengikuti panjang teks. */
 .toast {
   position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
   left: 50%;
-  bottom: calc(var(--nav-height) + 24px);
   transform: translateX(-50%);
-  width: calc(100% - 32px);
-  max-width: 448px;
-  background: #16202c;
-  color: #fff;
-  padding: 14px 16px;
-  border-radius: 14px;
-  z-index: 60;
-  box-shadow: var(--shadow-lg);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: min(360px, calc(100% - 32px));
+  padding: 9px 10px 9px 12px;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(11, 42, 74, 0.12);
+  font-size: 13px;
   font-weight: 600;
-  animation: rise 0.2s ease;
+  line-height: 1.35;
+  animation: toast-in 0.22s ease-out;
+}
+.toast-icon { flex: 0 0 auto; }
+.toast-success .toast-icon { color: #1f8a4c; }
+.toast-error .toast-icon { color: var(--danger); }
+.toast-info .toast-icon { color: var(--navy-light); }
+.toast-error { border-color: #f3c9c9; }
+.toast-text { min-width: 0; }
+.toast-close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 2px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.toast-close:hover { background: #f1f3f6; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 /* ===== Offline ===== */
@@ -2474,3 +2506,5 @@ h3 {
 .password-rules li.bad { color: var(--danger); font-weight: 600; }
 .password-rules li.bad svg { opacity: 1; }
 .wizard-sub { font-size: 13.5px; line-height: 1.45; }
+
+.sheet-sub { margin: -4px 0 12px; font-size: 13px; color: var(--muted); }

@@ -38,10 +38,10 @@ export default function ListingPage({ type, title, useList, filters, applyFilter
   async function askLocation() {
     try {
       await requestLocation();
-      toast("Lokasi ditemukan. Jarak dari kamu ditampilkan.");
+      toast("Lokasi ditemukan", "success");
       return true;
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
       return false;
     }
   }
@@ -142,7 +142,7 @@ export default function ListingPage({ type, title, useList, filters, applyFilter
         </div>
       )}
 
-      {/* Tombol tambah (Create) hanya untuk akun pemilik kos */}
+      {/* Tombol Pasang Iklan (Create) hanya untuk akun pemilik kos */}
       {isPemilik && view === "list" && (
         <Link to={`/${type}/baru`} className="fab">
           <Plus size={20} /> {addLabel}

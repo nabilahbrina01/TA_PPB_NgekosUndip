@@ -51,10 +51,10 @@ export default function Register() {
         password: form.password,
         role: form.role,
       });
-      toast("Kode OTP telah dikirim ke email kamu");
+      toast("Kode verifikasi terkirim ke email", "success");
       navigate(`/verifikasi?email=${encodeURIComponent(email)}`, { replace: true });
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
     } finally {
       setLoading(false);
     }

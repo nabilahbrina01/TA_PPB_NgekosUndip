@@ -14,9 +14,10 @@ export function AddListingSheet({ open, onClose }) {
       <div className="sheet" onClick={(e) => e.stopPropagation()} role="dialog">
         <div className="sheet-handle" />
         <div className="sheet-head">
-          <h3>Pasang iklan baru</h3>
+          <h3>Pasang Iklan</h3>
           <button className="icon-btn" onClick={onClose} aria-label="Tutup"><X size={20} /></button>
         </div>
+        <p className="sheet-sub">Pilih jenis properti yang ingin kamu iklankan</p>
         <button className="sheet-option" onClick={() => go("/kos/baru")}>
           <span className="sheet-icon"><BedDouble size={24} /></span>
           <span><strong>Kos</strong><small>Sewa kamar bulanan</small></span>

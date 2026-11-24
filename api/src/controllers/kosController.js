@@ -24,6 +24,10 @@ export const KosController = {
   async create(req, res) {
     try {
       // Jarak ke kampus dihitung otomatis dari titik peta (latitude, longitude)
+      // Alamat lengkap wajib diisi
+      if (!String(req.body.address || "").trim()) {
+        return res.status(400).json({ error: "Alamat lengkap wajib diisi" });
+      }
       const payload = withCampusDistance({ ...req.body, owner_id: req.user.id });
       delete payload.id;
       const data = await KosModel.create(payload);
@@ -44,6 +48,10 @@ export const KosController = {
         return res
           .status(403)
           .json({ error: "Kamu hanya bisa mengubah iklan milikmu sendiri" });
+      }
+      // Jika alamat ikut diubah, tidak boleh dikosongkan
+      if ("address" in req.body && !String(req.body.address || "").trim()) {
+        return res.status(400).json({ error: "Alamat lengkap wajib diisi" });
       }
       const payload = withCampusDistance({ ...req.body });
       delete payload.id;

@@ -22,16 +22,16 @@ export default function VerifyOtp() {
   async function verify(value = code) {
     if (loading) return;
     if (value.length !== 6) {
-      toast("Masukkan 6 digit kode");
+      toast("Masukkan 6 digit kode", "error");
       return;
     }
     setLoading(true);
     try {
       await verifyOtp(email, value); // POST /api/auth/verify-otp
-      toast("Email terverifikasi. Selamat datang!");
+      toast("Email berhasil diverifikasi", "success");
       navigate("/", { replace: true });
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
       setLoading(false);
     }
   }
@@ -39,9 +39,9 @@ export default function VerifyOtp() {
   async function resend() {
     try {
       await authService.resendOtp(email, "register");
-      toast("Kode OTP baru telah dikirim");
+      toast("Kode baru terkirim", "success");
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
       throw err;
     }
   }

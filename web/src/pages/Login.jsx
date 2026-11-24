@@ -28,7 +28,7 @@ export default function Login() {
       await login(email.trim(), password);
       navigate("/", { replace: true });
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
       // Akun belum verifikasi: API sudah mengirim kode, buka halaman OTP
       if (err.raw?.needsVerification) {
         navigate(`/verifikasi?email=${encodeURIComponent(email.trim())}`);

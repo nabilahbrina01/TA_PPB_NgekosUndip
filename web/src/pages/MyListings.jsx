@@ -36,10 +36,10 @@ export default function MyListings() {
     setToDelete(null);
     try {
       await (item.kind === "kos" ? kosService : kontrakanService).remove(item.id);
-      toast(`"${item.name}" dihapus`);
+      toast("Iklan berhasil dihapus", "success");
       reload();
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
     }
   }
 
@@ -81,7 +81,7 @@ export default function MyListings() {
       )}
 
       <button className="fab" onClick={() => setSheetOpen(true)} style={{ bottom: 24 }}>
-        <Plus size={20} /> Pasang iklan
+        <Plus size={20} /> Pasang Iklan
       </button>
       <AddListingSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
       <ConfirmDialog open={Boolean(toDelete)} title="Hapus iklan?" message={`"${toDelete?.name}" akan dihapus permanen.`}

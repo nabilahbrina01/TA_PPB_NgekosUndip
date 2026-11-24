@@ -32,9 +32,9 @@ export default function ForgotPassword() {
     try {
       await authService.forgotPassword(email.trim());
       setCodeSent(true);
-      toast(`Kode OTP telah dikirim ke ${email.trim()}`);
+      toast("Kode verifikasi terkirim", "success");
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
     } finally {
       setLoading(false);
     }
@@ -55,10 +55,10 @@ export default function ForgotPassword() {
     setLoading(true);
     try {
       await authService.resetPassword(email.trim(), code, password);
-      toast("Password berhasil diubah, silakan masuk");
+      toast("Password berhasil diubah", "success");
       navigate("/login", { replace: true });
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
     } finally {
       setLoading(false);
     }
@@ -67,9 +67,9 @@ export default function ForgotPassword() {
   async function resend() {
     try {
       await authService.resendOtp(email.trim(), "reset");
-      toast("Kode OTP baru telah dikirim");
+      toast("Kode baru terkirim", "success");
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
       throw err;
     }
   }

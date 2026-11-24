@@ -38,10 +38,10 @@ export default function DetailPage({ type, label, fetchOne, remove, badge, infoB
     setConfirmOpen(false);
     try {
       await remove(item.id); // DELETE /api/<type>/:id
-      toast(`"${item.name}" dihapus`);
+      toast("Iklan berhasil dihapus", "success");
       navigate(`/${type}`, { replace: true });
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
     }
   }
 
@@ -128,7 +128,7 @@ export default function DetailPage({ type, label, fetchOne, remove, badge, infoB
           {item.owner_phone && (
             <button className="icon-btn" aria-label="Salin nomor" onClick={() => {
               navigator.clipboard?.writeText(item.owner_phone);
-              toast("Nomor pemilik disalin");
+              toast("Nomor pemilik disalin", "success");
             }}>
               <Copy size={18} />
             </button>

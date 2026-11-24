@@ -34,7 +34,7 @@ export default function KontrakanList() {
       filters={FILTERS}
       applyFilter={applyFilter}
       toCard={toCard}
-      addLabel="Tambah Kontrakan"
+      addLabel="Pasang Iklan Kontrakan"
       priceOf={(k) => k.price_per_year}
       priceSuffix="/tahun"
       priceStep={5000000}

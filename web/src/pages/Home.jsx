@@ -78,7 +78,7 @@ export default function Home() {
               <small>Pasang iklan dengan foto, gratis.</small>
             </div>
             <div className="owner-cta-actions">
-              <button className="btn btn-gold btn-sm" onClick={() => setSheetOpen(true)}><Plus size={16} /> Pasang</button>
+              <button className="btn btn-gold btn-sm" onClick={() => setSheetOpen(true)}><Plus size={16} /> Pasang Iklan</button>
               <Link to="/iklan-saya" className="link small">Iklan saya</Link>
             </div>
           </div>

@@ -35,7 +35,7 @@ export default function KosList() {
       filters={FILTERS}
       applyFilter={applyFilter}
       toCard={toCard}
-      addLabel="Tambah Kos"
+      addLabel="Pasang Iklan Kos"
       priceOf={(k) => k.price_per_month}
       priceSuffix="/bulan"
       priceStep={250000}

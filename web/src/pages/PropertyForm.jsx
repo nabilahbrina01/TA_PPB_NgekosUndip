@@ -115,6 +115,9 @@ export default function PropertyForm({ kind }) {
     if (s === 0 && !form.name.trim()) e.name = `Nama ${label.toLowerCase()} wajib diisi`;
     if (s === 1) {
       if (!form.area_id) e.area_id = "Pilih salah satu area";
+      const address = form.address.trim();
+      if (!address) e.address = "Alamat lengkap wajib diisi";
+      else if (address.length < 10) e.address = "Alamat terlalu singkat, tulis lebih lengkap";
       if (!form.point && String(form.distance_km).trim() && Number.isNaN(Number(String(form.distance_km).replace(",", ".")))) {
         e.distance_km = "Isi angka, contoh 1.5";
       }
@@ -146,7 +149,7 @@ export default function PropertyForm({ kind }) {
     for (let s = 0; s < STEPS.length; s++) {
       if (!validateStep(s)) {
         setStep(s);
-        toast("Lengkapi data yang ditandai merah");
+        toast("Lengkapi data yang ditandai merah", "error");
         return;
       }
     }
@@ -155,7 +158,7 @@ export default function PropertyForm({ kind }) {
     const common = {
       name: form.name.trim(),
       area_id: form.area_id,
-      address: form.address.trim() || null,
+      address: form.address.trim(),
       // Jika titik peta diisi, API menghitung ulang distance_km secara otomatis
       latitude: form.point?.lat ?? null,
       longitude: form.point?.lng ?? null,
@@ -177,15 +180,15 @@ export default function PropertyForm({ kind }) {
     try {
       if (isEdit) {
         await service.update(id, payload); // PUT
-        toast(`Perubahan ${label.toLowerCase()} disimpan`);
+        toast("Perubahan berhasil disimpan", "success");
         navigate(`/${kind}/${id}`, { replace: true });
       } else {
         const created = await service.create(payload); // POST
-        toast(`Iklan ${label.toLowerCase()} berhasil dipasang 🎉`);
+        toast("Iklan berhasil dipasang", "success");
         navigate(`/${kind}/${created.id}`, { replace: true });
       }
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
     } finally {
       setSaving(false);
     }
@@ -215,7 +218,7 @@ export default function PropertyForm({ kind }) {
           <section>
             <h2 className="wizard-title">Tampilkan properti terbaikmu</h2>
             <p className="wizard-sub">Foto yang terang dan rapi membuat iklan lebih menarik.</p>
-            <GalleryUploader value={form.images} onChange={(images) => update({ images })} onError={toast} />
+            <GalleryUploader value={form.images} onChange={(images) => update({ images })} onError={(m) => toast(m, "error")} />
             <Field label={`Nama ${label.toLowerCase()} *`} icon={House}
               placeholder={isKos ? "Contoh: Kos Melati" : "Contoh: Rumah Asri"}
               value={form.name} onChange={(e) => update({ name: e.target.value })} error={errors.name} />
@@ -242,11 +245,13 @@ export default function PropertyForm({ kind }) {
               ))}
             </div>
             {errors.area_id && <p className="field-error">{errors.area_id}</p>}
-            <Field label="Alamat (opsional)" icon={MapPin} textarea rows={2}
+            <Field label="Alamat lengkap *" icon={MapPin} textarea rows={2}
               placeholder="Jalan, nomor, RT/RW"
+              hint="Contoh: Jl. Banjarsari No. 12, RT 03/RW 05"
+              error={errors.address}
               value={form.address} onChange={(e) => update({ address: e.target.value })} />
             <span className="field-label">Titik lokasi di peta</span>
-            <LocationPicker value={form.point} onChange={(point) => update({ point })} onError={toast}
+            <LocationPicker value={form.point} onChange={(point) => update({ point })} onError={(m) => toast(m, "error")}
               fallbackCenter={AREA_CENTERS[areaName]} />
             {!form.point && (
               <Field label="Jarak ke kampus (km)" icon={Footprints} inputMode="decimal"
