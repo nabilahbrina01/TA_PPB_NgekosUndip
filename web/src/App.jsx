@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import PropertyForm from "./pages/PropertyForm";
 import Register from "./pages/Register";
+import Schedule from "./pages/Schedule";
 import VerifyOtp from "./pages/VerifyOtp";
 
 /** Halaman yang wajib login. Belum login -> ke halaman Login. */
@@ -55,6 +56,7 @@ export default function App() {
       </Route>
 
       {/* Detail dan form (tanpa Bottom Navigation) */}
+      <Route path="/jadwal" element={<Private><Schedule /></Private>} />
       <Route path="/iklan-saya" element={<Private><PemilikOnly><MyListings /></PemilikOnly></Private>} />
       <Route path="/kos/baru" element={<Private><PemilikOnly><PropertyForm key="kos-new" kind="kos" /></PemilikOnly></Private>} />
       <Route path="/kos/:id/ubah" element={<Private><PemilikOnly><PropertyForm key="kos-edit" kind="kos" /></PemilikOnly></Private>} />

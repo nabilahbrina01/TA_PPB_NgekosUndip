@@ -7,6 +7,8 @@ import kontrakanRoutes from "./routes/kontrakanRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import favoriteRoutes from "./routes/favoriteRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import scheduleRoutes from "./routes/scheduleRoutes.js";
+import meetingRoutes from "./routes/meetingRoutes.js";
 
 dotenv.config();
 
@@ -18,7 +20,7 @@ app.get("/", (req, res) => {
   res.json({
     name: "NgekosUndip API",
     status: "running",
-    endpoints: ["/api/auth", "/api/areas", "/api/kos", "/api/kontrakan", "/api/favorites", "/api/upload"],
+    endpoints: ["/api/auth", "/api/areas", "/api/kos", "/api/kontrakan", "/api/favorites", "/api/upload", "/api/schedules", "/api/meetings"],
   });
 });
 
@@ -28,6 +30,8 @@ app.use("/api/kos", kosRoutes);
 app.use("/api/kontrakan", kontrakanRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/schedules", scheduleRoutes);
+app.use("/api/meetings", meetingRoutes);
 
 // Di Vercel server dijalankan otomatis, jadi listen hanya saat di laptop
 if (!process.env.VERCEL) {

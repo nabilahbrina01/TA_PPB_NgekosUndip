@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Check, Copy, Map, MapPin, MessageCircle, Pencil, Phone, Trash2, UserRound } from "lucide-react";
+import { ArrowLeft, CalendarClock, Check, Copy, Map, MapPin, MessageCircle, Pencil, Phone, Trash2, UserRound } from "lucide-react";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { Marker } from "react-leaflet";
 import { BaseMap, FitBounds, icons } from "../components/MapParts";
 import { PhotoGallery } from "../components/PhotoGallery";
+import { SchedulePicker } from "../components/SchedulePicker";
 import { ErrorView, Loading } from "../components/StateViews";
 import { useAuth } from "../context/AuthContext";
 import { useUserLocation } from "../context/LocationContext";
@@ -25,6 +26,7 @@ export default function DetailPage({ type, label, fetchOne, remove, badge, infoB
   const { user, isPemilik } = useAuth();
   const { location } = useUserLocation();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
   const { data: item, loading, error, reload } = useAsync(() => fetchOne(id), [id]);
 
   if (loading) return <Loading />;
@@ -118,6 +120,31 @@ export default function DetailPage({ type, label, fetchOne, remove, badge, infoB
           <Map size={18} /> Buka di Google Maps
         </a>
 
+        <h2 className="section-title">Jadwal Kunjungan</h2>
+        {isOwner ? (
+          <div className="visit-card">
+            <CalendarClock size={22} />
+            <div>
+              <strong>Atur jadwal kosongmu</strong>
+              <p>Calon penyewa bisa memilih jadwal kosong yang kamu sediakan untuk melihat properti.</p>
+            </div>
+            <Link to="/jadwal?tab=kosong" className="btn btn-light btn-sm">Atur</Link>
+          </div>
+        ) : !item.owner_id ? (
+          <p className="muted">Iklan ini belum mendukung jadwal kunjungan online. Hubungi pemilik lewat WhatsApp.</p>
+        ) : isPemilik ? (
+          <p className="muted">Pengajuan jadwal kunjungan hanya untuk akun pencari kos.</p>
+        ) : (
+          <div className="visit-card">
+            <CalendarClock size={22} />
+            <div>
+              <strong>Mau lihat langsung?</strong>
+              <p>Pilih jadwal kosong dari pemilik, lalu tunggu konfirmasinya.</p>
+            </div>
+            <button className="btn btn-primary btn-sm" onClick={() => setScheduleOpen(true)}>Pilih jadwal</button>
+          </div>
+        )}
+
         <h2 className="section-title">Pemilik</h2>
         <div className="owner-card">
           <span className="avatar"><UserRound size={22} /></span>
@@ -151,6 +178,10 @@ export default function DetailPage({ type, label, fetchOne, remove, badge, infoB
           </button>
         )}
       </div>
+
+      {item.owner_id && !isOwner && !isPemilik && (
+        <SchedulePicker open={scheduleOpen} onClose={() => setScheduleOpen(false)} item={item} itemType={type} />
+      )}
 
       <ConfirmDialog
         open={confirmOpen}

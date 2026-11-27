@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BadgeCheck, ChevronRight, Download, GraduationCap, IdCard, Info, LogOut, Megaphone, Plus, UserRound } from "lucide-react";
+import { BadgeCheck, CalendarClock, ChevronRight, Download, GraduationCap, IdCard, Info, LogOut, Megaphone, Plus, UserRound } from "lucide-react";
 import { AddListingSheet } from "../components/AddListingSheet";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
@@ -59,10 +59,24 @@ export default function Profile() {
           </>
         )}
 
+        {!isPemilik && (
+          <>
+            <h2 className="section-title">Aktivitas</h2>
+            <div className="info-card menu">
+              <Link to="/jadwal" className="menu-item">
+                <CalendarClock size={20} /> <span>Jadwal Kunjungan</span> <ChevronRight size={18} />
+              </Link>
+            </div>
+          </>
+        )}
+
         {isPemilik && (
           <>
             <h2 className="section-title">Kelola Iklan</h2>
             <div className="info-card menu">
+              <Link to="/jadwal" className="menu-item">
+                <CalendarClock size={20} /> <span>Jadwal Kunjungan</span> <ChevronRight size={18} />
+              </Link>
               <Link to="/iklan-saya" className="menu-item">
                 <Megaphone size={20} /> <span>Iklan Saya</span> <ChevronRight size={18} />
               </Link>

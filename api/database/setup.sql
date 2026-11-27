@@ -287,3 +287,53 @@ create policy "API boleh upload foto kos"
   on storage.objects for insert
   to anon, authenticated
   with check (bucket_id = 'kos-images');
+
+-- ---------------------------------------------------------------------
+-- 4. JADWAL KUNJUNGAN (pertemuan pencari kos dengan pemilik kos)
+-- ---------------------------------------------------------------------
+-- Jadwal kosong yang disediakan pemilik kos (berlaku untuk semua iklannya)
+create table schedule_slots (
+  id uuid primary key default gen_random_uuid(),
+  owner_id uuid not null references users(id) on delete cascade,
+  slot_date date not null,
+  start_time time not null,
+  end_time time not null,
+  note text,
+  created_at timestamptz default now(),
+  check (end_time > start_time),
+  unique (owner_id, slot_date, start_time)
+);
+
+create index schedule_slots_owner_date_idx on schedule_slots (owner_id, slot_date);
+
+-- Pengajuan jadwal dari pencari kos
+--   menunggu   : baru diajukan, menunggu jawaban pemilik
+--   diterima   : di-ACC pemilik (jadwal sudah dipesan)
+--   ditolak    : ditolak pemilik (atau otomatis karena ada yang diterima)
+--   dibatalkan : dibatalkan pencari
+create table meetings (
+  id uuid primary key default gen_random_uuid(),
+  slot_id uuid not null references schedule_slots(id) on delete cascade,
+  seeker_id uuid not null references users(id) on delete cascade,
+  owner_id uuid not null references users(id) on delete cascade,
+  item_type text not null check (item_type in ('kos', 'kontrakan')),
+  item_id uuid not null,
+  item_name text,
+  message text,
+  status text not null default 'menunggu'
+    check (status in ('menunggu', 'diterima', 'ditolak', 'dibatalkan')),
+  owner_note text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- Satu jadwal hanya boleh punya SATU pertemuan yang diterima (pengaman bentrok)
+create unique index meetings_one_accepted_per_slot
+  on meetings (slot_id) where status = 'diterima';
+
+-- Satu pencari tidak bisa mengajukan jadwal yang sama dua kali selama masih aktif
+create unique index meetings_one_active_per_seeker
+  on meetings (slot_id, seeker_id) where status in ('menunggu', 'diterima');
+
+create index meetings_owner_idx on meetings (owner_id, status);
+create index meetings_seeker_idx on meetings (seeker_id, status);

@@ -16,3 +16,19 @@ export async function requirePemilik(req, res, next) {
     res.status(500).json({ error: err.message });
   }
 }
+
+// Hanya akun dengan role "pencari" yang boleh lanjut (mengajukan jadwal kunjungan).
+export async function requirePencari(req, res, next) {
+  try {
+    const user = await UserModel.findById(req.user.id);
+    if (!user || user.role !== "pencari") {
+      return res
+        .status(403)
+        .json({ error: "Hanya akun pencari kos yang bisa mengajukan jadwal kunjungan" });
+    }
+    req.user.role = user.role;
+    next();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}

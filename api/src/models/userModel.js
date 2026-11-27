@@ -25,6 +25,17 @@ export const UserModel = {
     return data;
   },
 
+  // Nama & nomor HP beberapa user sekaligus (untuk daftar jadwal kunjungan)
+  async findManyByIds(ids) {
+    if (!ids.length) return [];
+    const { data, error } = await supabase
+      .from("users")
+      .select("id, name, phone")
+      .in("id", ids);
+    if (error) throw error;
+    return data;
+  },
+
   async create({ name, email, phone, password_hash, role }) {
     const { data, error } = await supabase
       .from("users")

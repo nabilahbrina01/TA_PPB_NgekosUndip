@@ -71,6 +71,7 @@ TA_PPB_NgekosUndip/
 - **Urutkan**: harga termurah, termahal, atau jarak terdekat (diproses di API)
 - **Hubungi pemilik via WhatsApp** dan **buka lokasi di Google Maps** dari halaman detail
 - **Favorit**: tersimpan di database per akun, jadi tetap ada walau ganti HP
+- **Jadwal kunjungan**: pemilik menyediakan jadwal kosong; pencari memilih jadwal di halaman detail dan mengajukan kunjungan; pemilik menerima (ACC) atau menolak. Sistem menampilkan info bentrok jika jam yang sama sudah diajukan pencari lain, dan API mengembalikan **409 Conflict** jika jadwal sudah dipesan
 - **Profil**: data pengguna, info pembuat aplikasi, logout
 
 Navigasi utama menggunakan **Bottom Navigation Bar** (Beranda, Kos, Kontrakan, Favorit, Profil).
@@ -101,12 +102,21 @@ Base URL: `https://ta-ppb-ngekos-undip-api.vercel.app/api`
 | GET | `/favorites` | Favorit milik user yang login (wajib token) |
 | POST | `/favorites` | Tambah favorit (`item_type`: kos/kontrakan, `item_id`), wajib token |
 | DELETE | `/favorites/:type/:id` | Hapus favorit, wajib token |
+| GET | `/schedules/owner/:ownerId` | Jadwal kosong seorang pemilik + status (`tersedia` / `ada_pengajuan` / `dipesan`), wajib token |
+| GET | `/schedules/mine` | Jadwal kosong milik sendiri (khusus pemilik) |
+| POST | `/schedules` | Tambah jadwal kosong (`slot_date`, `start_time`, `end_time`, `note`), khusus pemilik. **409** jika bertabrakan dengan jadwal lain |
+| DELETE | `/schedules/:id` | Hapus jadwal kosong milik sendiri. **409** jika sudah dipesan |
+| POST | `/meetings` | Ajukan jadwal kunjungan (`slot_id`, `item_type`, `item_id`, `message`), khusus pencari. **409 Conflict** jika jadwal sudah dipesan pencari lain |
+| GET | `/meetings/mine` | Pengajuan jadwal milik sendiri (pencari) |
+| GET | `/meetings/incoming` | Pengajuan jadwal yang masuk (khusus pemilik) |
+| PATCH | `/meetings/:id/status` | Terima / tolak pengajuan (`status`: diterima/ditolak), khusus pemilik. Pengajuan lain di jam yang sama otomatis ditolak |
+| PATCH | `/meetings/:id/cancel` | Batalkan pengajuan sendiri (pencari) |
 
 ## Cara Menjalankan
 
 ### Backend (api)
 
-1. Buat project Supabase baru, lalu jalankan seluruh isi `api/database/setup.sql` di **SQL Editor** (sekali saja). Isinya: 6 tabel (`users`, `areas`, `kos`, `kontrakan`, `favorites`, `otp_codes`), data contoh, dan bucket foto `kos-images`.
+1. Buat project Supabase baru, lalu jalankan seluruh isi `api/database/setup.sql` di **SQL Editor** (sekali saja). Isinya: 8 tabel (`users`, `areas`, `kos`, `kontrakan`, `favorites`, `otp_codes`, `schedule_slots`, `meetings`), data contoh, dan bucket foto `kos-images`.
 2. Salin `.env.example` menjadi `.env`, lalu isi `SUPABASE_URL`, `SUPABASE_KEY`, `JWT_SECRET`, `GMAIL_USER`, dan `GMAIL_APP_PASSWORD` (App Password Gmail untuk mengirim OTP).
 3. Jalankan:
    ```bash
